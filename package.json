@@ -29,9 +29,10 @@
     "webpack": "^3.11.0"
   },
   "scripts": {
-    "devCentral": "ts-node-dev --inspect --no-notify -r ./register-ts-config-path.ts ./src/central.ts",
-    "devBranch": "ts-node-dev --inspect --no-notify -r ./register-ts-config-path.ts ./src/branch.ts",
-    "initizalize": "ts-node-dev --inspect --no-notify -r ./register-ts-config-path.ts ./src/initialize.ts",
+    "central": "ts-node-dev --inspect --no-notify -r ./register-ts-config-path.ts ./src/central.ts",
+    "branch": "ts-node-dev --inspect --no-notify -r ./register-ts-config-path.ts ./src/branch.ts",
+    "initialize": "ts-node-dev --inspect --no-notify -r ./register-ts-config-path.ts ./src/initialize.ts",
+    "insert": "ts-node-dev --inspect --no-notify -r ./register-ts-config-path.ts ./src/insert.ts",
     "nodemon": "nodemon",
     "tslint:fix": "tslint --fix -c tslint.json \"*.{ts,tsx}\"",
     "test": "jest --coverage",

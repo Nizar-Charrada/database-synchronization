@@ -1,6 +1,11 @@
 import * as mysql from 'mysql2'
 import { BOPREFIX, HOPREFIX, TABLENAME, COLUMNLIST } from './constants'
 import { generateData } from './generateData'
+import { insertDataintoBO } from './utils'
+import { exit } from 'process'
+
+
+
 const connectionBO1 = mysql.createConnection({
     host: 'localhost',
     user: 'root',
@@ -26,7 +31,7 @@ const connectionHO = mysql.createConnection({
 
 const createTable = (connection: mysql.Connection, tableName: string, columnList: { name: string, type: string }[]) => {
     const query = `CREATE TABLE if not exists ${tableName} (id int auto_increment primary key, ${columnList.map(column => `${column.name} ${column.type}`).join(', ')})`
-    console.log(query)
+    
     connection.query(query, (err, result) => {
         if (err) throw err
         console.log(`table ${tableName} created`)
@@ -41,7 +46,7 @@ createTable(connectionHO, TABLENAME, [{ name: 'source', type: 'varchar(255)' }, 
 
 const createCacheTable = (connection: mysql.Connection, tableName: string, columnList: { name: string, type: string }[]) => {
     const query = `CREATE TABLE if not exists ${tableName} (${columnList.map(column => `${column.name} ${column.type}`).join(', ')})`
-    console.log(query)
+    
     connection.query(query, (err, result) => {
         if (err) throw err
         console.log(`table ${tableName} created`)
@@ -55,7 +60,7 @@ createCacheTable(connectionBO2, 'cache', COLUMNLIST)
 
 const createTrigger = (connection: mysql.Connection, tableName: string, triggerName: string) => {
     const query = `CREATE TRIGGER if not exists ${triggerName} AFTER INSERT ON ${tableName} FOR EACH ROW INSERT INTO cache VALUES (NEW.article, NEW.quantite, NEW.prix, NEW.date)`
-    console.log(query)
+    
     connection.query(query, (err, result) => {
         if (err) throw err
         console.log(`trigger ${triggerName} created`)
@@ -67,15 +72,7 @@ createTrigger(connectionBO2, TABLENAME, 'insert_in_cache')
 
 // Fill the tables with some data
 
-const insertData = (connection: mysql.Connection, tableName: string, data: { article: string, quantite: number, prix: number, date: string }[]) => {
-    const query = `INSERT INTO ${tableName} (article, quantite, prix, date) VALUES ${data.map(row => `("${row.article}", ${row.quantite}, ${row.prix}, "${row.date}")`).join(', ')}`
-    console.log(query)
-    connection.query(query, (err, result) => {
-        if (err) throw err
-        console.log(`data inserted`)
-    })
-}
 
-insertData(connectionBO1, TABLENAME, generateData(10))
-insertData(connectionBO2, TABLENAME, generateData(10))
 
+insertDataintoBO(connectionBO1, TABLENAME, generateData(10))
+insertDataintoBO(connectionBO2, TABLENAME, generateData(10))
